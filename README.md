@@ -1,494 +1,337 @@
-# SupportOps AI
+# Velocity Engine — AI Lead Intake & Prioritization
 
-Customer Support Intelligence and Automation Workspace
+> An AI engine that reads every inbound lead the moment it lands, scores it on **BANT** (Budget · Authority · Need · Timeline), and routes it — turning a 42-hour, manual qualification process into one that responds to the best buyers in minutes.
 
-SupportOps AI is a portfolio project that shows how AI and workflow automation can improve customer support operations.
+![Python](https://img.shields.io/badge/Python-3.9%2B-1f6feb)
+![Claude](https://img.shields.io/badge/AI-Claude%20Opus%204.8-0D6B4F)
+![Structured Outputs](https://img.shields.io/badge/Structured%20Outputs-Pydantic%20%2B%20JSON%20Schema-D4AF37)
+![License](https://img.shields.io/badge/License-MIT-475569)
 
-It helps a support team triage tickets, understand customer risk, match issues to knowledge base articles, trigger automation rules, and surface process improvement opportunities.
+This repository is a **self-contained, end-to-end demonstration** of an AI lead-scoring system: synthetic data → an AI scoring engine → a routing layer → an interactive executive dashboard. It runs offline for free (deterministic rules pass) or against the **Claude API** for real model-driven scoring.
 
-The current version is a static frontend MVP built with HTML, CSS, and JavaScript. It is designed to be easy to run, easy to review, and strong enough to demonstrate the product workflow before adding a backend.
+It models a fictional company, **Cadence Workflow** — a ~120-person Series B B2B SaaS selling project-management software per-seat — where 3 SDRs and 4 AEs can't reach 400 monthly leads in time, so the best buyers go cold before anyone calls.
 
-![SupportOps AI dashboard](./supportops-ai-desktop.png)
+**▶ Live demos** — once GitHub Pages is enabled (Settings → Pages → Deploy from a branch → `main` / `/docs`):
 
-## Project Purpose
-
-Support teams often lose time on repetitive triage work:
-
-- Reading long customer messages
-- Deciding priority and sentiment
-- Finding the right SOP or policy
-- Escalating SLA risks manually
-- Drafting similar replies again and again
-- Logging recurring issues for process improvement
-
-SupportOps AI turns that workflow into an intelligence layer.
-
-The app gives support agents, team leads, and operations managers one workspace to see what needs attention, why it matters, and what action should happen next.
-
-## What This Demonstrates
-
-This project was built as a practical AI automation portfolio asset.
-
-It demonstrates:
-
-- Customer support process understanding
-- AI triage workflow design
-- Ticket classification logic
-- Knowledge base matching
-- Automation rule design
-- Integration planning for email, CRM, helpdesk, and webhook intake
-- Support operations dashboards
-- Process improvement backlog thinking
-- Clear product documentation
-- Frontend execution with responsive UI
-
-It is not just a screen mockup.
-
-It is a working browser app with interactive workflows, local demo state, sample tickets, simulated integrations, automation rules, and a production blueprint.
-
-## Current Status
-
-Current build: Static portfolio MVP
-
-Technology used today:
-
-- HTML
-- CSS
-- Vanilla JavaScript
-- Browser storage for demo persistence
-- Deterministic AI-style triage logic
-- Local sample ticket, knowledge base, integration, and automation data
-
-No API key is required for the current version.
-
-The AI behavior is simulated through deterministic logic so the app can be reviewed safely on GitHub without exposing paid services or credentials.
-
-## Live Demo Locally
-
-Run the project from the repo folder:
-
-```bash
-cd /Users/aceymagallanes/supportops-ai
-python3 -m http.server 4173 --bind 127.0.0.1
-```
-
-Open:
-
-```text
-http://127.0.0.1:4173/index.html
-```
-
-You can also open `index.html` directly in a browser, but a local server is recommended.
-
-## Demo Login
-
-The login screen is a demo entry point.
-
-Use the default email:
-
-```text
-acey@aceliora.ai
-```
-
-Choose one of the role cards:
-
-- Support Agent
-- Team Lead
-- Operations Admin
-
-Then click:
-
-```text
-Enter workspace
-```
-
-The role changes the user context shown inside the app. Authentication is not connected to a real identity provider in the current MVP.
-
-## Core Product Modules
-
-| Module | Purpose |
+| Demo | Link |
 |---|---|
-| Dashboard | Gives a live view of ticket volume, SLA risk, sentiment, automation savings, and priority tickets. |
-| AI Triage | Lets a user paste a customer message and generate category, priority, sentiment, SLA status, summary, next action, and response draft. |
-| Integrations | Simulates how tickets can arrive from email, CRM, helpdesk, and webhook sources. |
-| Knowledge Base | Stores SOPs, policies, runbooks, and playbooks that can be matched to customer issues. |
-| Ticket Queue | Shows support work in a structured queue with priority, SLA, sentiment, and owner fields. |
-| Automations | Shows active and paused automation rules, matching logic, payload preview, and workflow simulation. |
-| Insights | Summarizes support health, risk signals, category mix, recurring issues, and estimated effort avoided. |
-| Blueprint | Documents the planned production architecture, data model, automation handoffs, and backend roadmap. |
+| 🛠️ **Velocity Console** — the interactive **working tool** (queue, routing, live scorer) | `https://aceymagallanes.github.io/velocity-engine/console.html` · [how to use](https://aceymagallanes.github.io/velocity-engine/guide.html) |
+| 📊 **Executive dashboard** — the narrative walkthrough | `https://aceymagallanes.github.io/velocity-engine/` |
 
-## Main Demo Workflow
+---
 
-Use this flow when presenting the project:
+## Table of contents
 
-1. Enter the workspace from the login screen.
-2. Review the Dashboard metrics and priority queue.
-3. Select a ticket and explain the AI-generated summary, next action, response draft, and KB matches.
-4. Open AI Triage and analyze the sample urgent refund and access issue.
-5. Create a new ticket from the triage result.
-6. Open Knowledge Base and show how SOPs are searched and matched.
-7. Open Integrations and import a sample ticket from a simulated source.
-8. Open Automations and run matched automation rules for the selected ticket.
-9. Open Insights and explain the support health score, risk signals, and process backlog.
-10. Open Blueprint and explain how the app would connect to real data, AI services, and n8n workflows.
+- [What it does](#what-it-does)
+- [Results](#results)
+- [Live working demo — the Velocity Console](#live-working-demo--the-velocity-console)
+- [Data architecture](#data-architecture)
+- [How Velocity works (technical)](#how-velocity-works-technical)
+- [Tech stack](#tech-stack)
+- [Repository structure](#repository-structure)
+- [Getting started](#getting-started)
+- [The dashboard](#the-dashboard)
+- [Data dictionary](#data-dictionary)
+- [How a company adopts this](#how-a-company-adopts-this)
+- [Notes & disclaimer](#notes--disclaimer)
+- [About](#about)
 
-## Feature Detail
+---
 
-### 1. Dashboard
+## What it does
 
-The dashboard gives a support operations view of active work.
+Inbound qualification is usually manual and outnumbered: leads arrive around the clock, the team works business hours, and the highest-intent buyers wait in a queue. Velocity removes the wait.
 
-It includes:
+1. **Captures** every lead from any channel into one normalized record.
+2. **Scores** each lead's own message on Budget, Authority, Need, and Timeline (0–3 each) — with a one-line reason for every score.
+3. **Tiers & routes** it: high → an AE in minutes, medium → the SDR queue, low → an automated nurture track.
+4. **Surfaces** the whole picture in an interactive dashboard executives can actually read.
 
-- Open ticket count
-- SLA risk count
-- Negative sentiment count
-- Estimated weekly effort avoided
-- Ticket search
-- Ticket filters
-- Ticket detail panel
-- AI summary
-- Recommended next action
-- Draft customer response
-- Conversation context
-- Knowledge base matches
+The point the data makes is uncomfortable and deliberate: under the **as-is** process, **16 of 64 high-priority leads — buyers with budget, authority, and a deadline — were never contacted at all.**
 
-The goal is to help an agent move from "What is happening?" to "What should I do next?"
+---
 
-### 2. AI Triage
+## Results
 
-The AI Triage module accepts a customer message and generates structured ticket intelligence.
+Modeled on the synthetic dataset in this repo (400 leads, calibrated to a realistic broken baseline):
 
-Current simulated output includes:
+| Metric | As-is (manual) | Velocity (routed) | Delta |
+|---|---|---|---|
+| Average first response | ~42 hours | ~13 hours | **~3× faster** |
+| Response to **high-priority** leads | ~28 hours | 5 minutes | **~330× faster** |
+| Leads never contacted | 28% | 0% (all routed) | **−28 pts** |
+| Priority tiers (emerged from messages, not labeled) | — | 16% High · 32% Medium · 52% Low | — |
 
-- Category
-- Priority
-- Sentiment
-- SLA status
-- Urgency score
-- Short summary
-- Next best action
-- Draft response
-- Suggested knowledge base matches
+> The "to-be" SLAs are conservative routing targets (High 5 min, Medium 60 min, Low 24 h). The "as-is" baseline is calibrated to a ~2,520-minute (≈42 h) mean with a long tail and ~28% never contacted — see [Data dictionary](#data-dictionary).
 
-In the production version, this would be handled by an AI service using structured outputs.
+---
 
-### 3. Integration Center
+## Live working demo — the Velocity Console
 
-The Integration Center shows how the app can receive tickets from business systems.
+Beyond the narrative dashboard, the repo ships a **functional tool**: [`docs/console.html`](docs/console.html) — a live lead-triage workbench that runs entirely in the browser (no backend, no login).
 
-Planned source types:
+- **Filterable / sortable / searchable queue** of all 400 leads, with **live-updating KPIs**.
+- **Per-lead detail & routing** — click any lead for its BANT breakdown, the reason, the recommended action + SLA, and a **Route this lead** button that updates the queue.
+- **⚡ Live scorer** — paste *any* lead message and the **actual BANT rules engine — ported from [`src/score_leads.py`](src/score_leads.py) to run client-side** — scores and tiers it in real time. This is the proof the engine genuinely reads and reasons over the text, not a canned result.
+- A built-in **[how-to-use guide](docs/guide.html)** with a 30-second demo script.
 
-- Gmail or Outlook support inbox
-- HubSpot or Salesforce CRM cases
-- Zendesk or Freshdesk helpdesk queue
-- Generic webhook from n8n, Make, Zapier, or a custom form
+**Try it live:** `https://aceymagallanes.github.io/velocity-engine/console.html`
 
-The current version simulates these sources and lets the user import sample tickets into the queue.
+---
 
-### 4. Knowledge Base
+## Data architecture
 
-The Knowledge Base module stores operational guidance.
-
-Current article examples:
-
-- Billing Sync Failure SOP
-- Duplicate Charge and Refund Workflow
-- MFA Lockout Resolution
-- Large Export Timeout
-- Positive Feedback Routing
-- Technical Triage Checklist
-
-Articles include:
-
-- Category
-- Type
-- Status
-- Tags
-- Summary
-- Step-by-step handling instructions
-- Related queue items
-
-In production, these articles would be stored in a database and searched with semantic matching.
-
-### 5. Automations
-
-The Automation Center models workflow rules that would later run through n8n or another orchestration layer.
-
-Current automation examples:
-
-- Escalate high-risk negative tickets to a support lead channel
-- Route refund requests to Billing Operations
-- Attach knowledge base matches to the ticket intelligence panel
-- Log recurring issues to a process improvement backlog
-
-The current app can simulate matched automations for the selected ticket and show the payload that would be sent to external systems.
-
-### 6. Insights
-
-The Insights page turns ticket data into operational intelligence.
-
-It shows:
-
-- Support health score
-- SLA risk signals
-- Sentiment risk
-- High-priority ticket count
-- Automation coverage
-- Category mix
-- Recommended process backlog
-- Estimated effort avoided
-
-This is where the project connects AI automation to business transformation.
-
-### 7. Blueprint
-
-The Blueprint page explains how the MVP would become a real product.
-
-It includes:
-
-- Data intake flow
-- Core data objects
-- Automation handoffs
-- Backend implementation roadmap
-
-This page is important for reviewers because it shows that the app is designed with a real architecture in mind.
-
-## Data Architecture Summary
-
-The current version uses local JavaScript objects as demo data.
-
-Production data would come from:
-
-- Email inboxes
-- CRM case records
-- Helpdesk platforms
-- Webhooks
-- Support forms
-- Knowledge base systems
-
-Production flow:
-
-1. A customer message arrives from email, CRM, helpdesk, or webhook.
-2. The app normalizes the message into a ticket payload.
-3. A backend service stores the raw message and ticket metadata.
-4. An AI triage service classifies the issue and generates structured output.
-5. A knowledge matching service finds relevant SOPs or policies.
-6. Automation rules decide whether to escalate, route, update CRM, or log an issue.
-7. The frontend displays the enriched ticket and recommended action.
-8. n8n or another workflow tool sends updates to Slack, CRM, billing, or operations tools.
-
-Read the full architecture in [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
-
-Read the data model in [docs/DATA_MODEL.md](./docs/DATA_MODEL.md).
-
-## Technical Architecture
-
-### Current MVP Architecture
-
-```text
-Browser
-  |
-  |-- index.html
-  |-- styles.css
-  |-- app.js
-        |
-        |-- sample ticket data
-        |-- sample knowledge articles
-        |-- simulated integration sources
-        |-- automation rule logic
-        |-- browser/session storage
-```
-
-### Target Production Architecture
+The system is a small, transparent pipeline. The **engine in the middle is reusable**; the **edges are yours** — your channels flow in, your tools take the action out.
 
 ```mermaid
 flowchart LR
-  A["Email / CRM / Helpdesk / Webhook"] --> B["Normalize Ticket Payload"]
-  B --> C["Backend API"]
-  C --> D["AI Triage Service"]
-  D --> E["Knowledge Matching"]
-  E --> F[("Supabase Postgres")]
-  D --> F
-  F --> G["SupportOps AI Workspace"]
-  D --> H["Automation Decision"]
-  H --> I["n8n Workflows"]
-  I --> J["Slack / CRM / Billing / Backlog"]
+  subgraph SRC["Lead sources — your systems"]
+    A1[Web forms]
+    A2[CRM / inbox]
+    A3[Ads · chat]
+  end
+  SRC --> ING["Ingest API<br/>webhook / REST"]
+  ING --> NRM["Normalize<br/>→ one lead schema"]
+  NRM --> CORE{{"Velocity Core<br/>Claude · BANT scoring"}}
+  CORE --> RT["Route<br/>tier · SLA"]
+  RT --> ACT["Act — your systems<br/>CRM · Slack · email · calendar"]
+  ACT -. "won / lost outcomes" .-> CORE
+  CORE --> DB[("JSON data layer")]
+
+  classDef engine fill:#0D6B4F,stroke:#094D3A,color:#fff;
+  classDef yours fill:#475569,stroke:#0A1D37,color:#fff;
+  class ING,NRM,CORE,RT,DB engine;
+  class A1,A2,A3,ACT yours;
 ```
 
-## Recommended Production Stack
+**Stages**
 
-The recommended stack for the next build:
-
-| Layer | Recommended Tool | Reason |
+| Stage | Owner | What it does |
 |---|---|---|
-| Frontend | Next.js + TypeScript | Scalable app structure, routing, stronger maintainability. |
-| Database | Supabase Postgres | Fast setup, relational data, auth, storage, and API support. |
-| Vector Search | pgvector on Supabase | Useful for semantic knowledge base matching. |
-| Backend API | FastAPI | Clean Python API layer for AI and automation workflows. |
-| AI Layer | OpenAI API with structured outputs | Reliable structured triage output for category, sentiment, priority, SLA, and next action. |
-| Workflow Automation | n8n | Strong fit for Slack, CRM, email, webhook, and operations handoffs. |
-| Deployment | Vercel + Render/Fly.io/Supabase | Practical split for frontend, backend, and database. |
+| Lead sources | You | Every inbound channel — forms, CRM, shared inbox, ads, demo bookings, chat |
+| Ingest API | Engine | Captures each new lead via webhook / REST the moment it's created |
+| Normalize | Engine | Maps messy inputs to one schema: `{source, role, company_size, region, message, timestamp}` |
+| **Velocity Core** | Engine | Claude reads the message and returns a structured BANT score + reason |
+| Route | Engine | Tier → action and response-time SLA |
+| Act | You | CRM update, Slack/Teams alert, email/SMS, calendar booking (API / MCP) |
+| Data layer | Engine | Plain JSON state; outcomes feed back to refine the rubric |
 
-## Repository Structure
+The data layer is intentionally just JSON ([`data/leads.json`](data/leads.json) → [`data/leads_scored.json`](data/leads_scored.json)) so the system drops into any stack without a migration.
 
-```text
-supportops-ai/
-  index.html
-  styles.css
-  app.js
-  supportops-ai-desktop.png
-  README.md
-  CONTRIBUTING.md
-  LICENSE
-  .gitignore
-  docs/
-    AI_TRIAGE_SPEC.md
-    ARCHITECTURE.md
-    AUTOMATION_PLAYBOOK.md
-    DATA_MODEL.md
-    DEMO_SCRIPT.md
-    GITHUB_CHECKLIST.md
-    PORTFOLIO_CASE_STUDY.md
-    ROADMAP.md
-    SECURITY_AND_PRIVACY.md
-    SETUP.md
+---
+
+## How Velocity works (technical)
+
+Each lead takes the same path: assemble a request with a **fixed BANT rubric** and a **strict output schema**, send it to Claude, and get back a guaranteed-valid structured object that's tiered and routed.
+
+```mermaid
+flowchart TD
+  L["Lead message + context"] --> P["Assemble request<br/>system: BANT rubric (cached)<br/>output: JSON Schema (structured)"]
+  P --> C["Claude Opus 4.8<br/>structured output"]
+  C --> S["BANT scores 0–3 each<br/>+ one-line reason"]
+  S --> T{"Total / 12"}
+  T -->|"≥ 8"| H["HIGH → AE in 5 min"]
+  T -->|"3–7"| M["MEDIUM → SDR in 60 min"]
+  T -->|"0–2"| Lo["LOW → nurture in 24 h"]
+
+  classDef hi fill:#0D6B4F,stroke:#094D3A,color:#fff;
+  classDef md fill:#D4AF37,stroke:#9a7d1e,color:#0A1D37;
+  classDef lo fill:#9FB0AE,stroke:#475569,color:#0A1D37;
+  class H hi; class M md; class Lo lo;
 ```
 
-## How The AI Logic Works Today
+### The request → response, per lead
 
-The current AI triage behavior is simulated in `app.js`.
-
-The logic checks the customer subject and message for signals such as:
-
-- Refund
-- Duplicate billing
-- Access issue
-- Login lockout
-- Reporting or export issue
-- Positive feedback
-- Urgency
-- Negative sentiment
-
-It then generates:
-
-- Category
-- Sentiment
-- Priority
-- SLA status
-- Urgency score
-- Summary
-- Next action
-- Draft response
-- Knowledge base matches
-
-This makes the demo reliable and easy to review.
-
-The next step is to replace this deterministic logic with a real AI API.
-
-## Why This Project Matters
-
-This project is built for the kind of AI and automation role that needs both business process understanding and technical execution.
-
-It shows the ability to:
-
-- Understand support operations
-- Find repeatable process pain
-- Design an AI-assisted workflow
-- Build an interactive product experience
-- Think in terms of data, systems, and handoffs
-- Connect automation to measurable operational impact
-
-That combination matters.
-
-Many teams do not need AI experiments.
-
-They need AI built into the way work already happens.
-
-## Portfolio Positioning
-
-Use this description in a portfolio, LinkedIn post, or job application:
+**Request to Claude** (the system prompt holds a fixed rubric and is prompt-cached; the user message is the lead's own words):
 
 ```text
-SupportOps AI is a customer support intelligence workspace that helps teams triage tickets, detect SLA risk, match customer issues to SOPs, draft better responses, and trigger support operations automations.
-
-I built it to demonstrate how AI can improve support quality, reduce manual triage, and turn recurring tickets into process improvement opportunities.
+system:  BANT rubric (fixed) — how to score Budget/Authority/Need/Timeline 0–3
+input:   lead.stated_need + {source, role, company_size, region}
+output:  JSON Schema (structured outputs) → guaranteed valid object
 ```
 
-## Documents
+**Structured response** (validated against a Pydantic model / JSON Schema):
 
-| Document | Purpose |
+```json
+{
+  "budget": 3,
+  "authority": 3,
+  "need": 3,
+  "timeline": 3,
+  "reason": "Approved budget for 120 seats, Q3 deadline, VP-level buyer."
+}
+```
+
+→ `total 12/12 → HIGH → route to an AE in 5 minutes`
+
+### Why it's built this way
+
+- **Reads, doesn't keyword-match.** Claude Opus 4.8 interprets each lead's *intent* from natural language — "we've ring-fenced budget and need this before our busiest season" scores correctly even with no trigger words.
+- **Structured outputs.** A JSON Schema (via Pydantic) guarantees a valid BANT object every call — no brittle parsing. ~$0.002 per lead; ~1 minute for 400 leads via concurrent requests.
+- **Auditable by design.** One rubric lives in a single system prompt, and **every score carries a reason**, so a human can see *why* a lead was tiered the way it was.
+- **Free, offline fallback.** A deterministic **rules engine** ([`src/score_leads.py`](src/score_leads.py)) mirrors the same BANT scoring with keyword heuristics — perfect for offline demos, CI tests, and zero-cost runs. The AI pass ([`src/score_leads_ai.py`](src/score_leads_ai.py)) is a drop-in upgrade producing the same schema.
+- **Open at both ends.** A small Python core: webhooks / n8n in; CRM, Slack, email, and calendar out via each tool's API or MCP.
+
+### Scoring pipeline (two interchangeable passes)
+
+```mermaid
+flowchart LR
+  G["generate_leads.py<br/>synthetic dataset"] --> J[("leads.json")]
+  J --> R["score_leads.py<br/>rules pass (free, offline)"]
+  J --> AI["score_leads_ai.py<br/>Claude API pass"]
+  R --> JS[("leads_scored.json")]
+  AI --> JS
+  JS --> B["build_dashboard.py"]
+  B --> H[["docs/index.html<br/>interactive dashboard"]]
+```
+
+Both scorers write the **same** `leads_scored.json` shape, so the dashboard renders either one unchanged. Run the rules pass to see it instantly for free, then swap in the AI pass for real model scoring (the dashboard even shows the model's per-lead reasoning).
+
+---
+
+## Tech stack
+
+| Layer | Technology |
 |---|---|
-| [Architecture](./docs/ARCHITECTURE.md) | Explains current MVP architecture and target production architecture. |
-| [Data Model](./docs/DATA_MODEL.md) | Defines the planned database structure and ticket payload design. |
-| [AI Triage Spec](./docs/AI_TRIAGE_SPEC.md) | Defines the planned structured AI output for ticket triage. |
-| [Automation Playbook](./docs/AUTOMATION_PLAYBOOK.md) | Defines the first n8n-ready automation workflows. |
-| [Portfolio Case Study](./docs/PORTFOLIO_CASE_STUDY.md) | Positions the project as a business transformation and AI automation case study. |
-| [Demo Script](./docs/DEMO_SCRIPT.md) | Gives a clear talk track for a 2-minute or 5-minute walkthrough. |
-| [Roadmap](./docs/ROADMAP.md) | Lists the build phases from static MVP to production-ready app. |
-| [Security And Privacy](./docs/SECURITY_AND_PRIVACY.md) | Clarifies demo data boundaries and production security requirements. |
-| [Setup](./docs/SETUP.md) | Shows how to run and troubleshoot the project locally. |
-| [GitHub Checklist](./docs/GITHUB_CHECKLIST.md) | Gives the exact steps to prepare and publish the repo. |
+| Core service | **Python 3** (standard library for the rules pass — no deps required) |
+| AI scoring | **Anthropic Claude API** · **Claude Opus 4.8** (quality) / **Claude Haiku 4.5** (cost mode) |
+| Output contract | **Structured Outputs** — Pydantic models + JSON Schema |
+| Throughput | Concurrent scoring (`ThreadPoolExecutor`), prompt caching of the rubric |
+| Integration (reference) | **n8n** / webhooks in; CRM, Slack, email, calendar out via API / **MCP** |
+| Data layer | Plain **JSON** (`leads.json` → `leads_scored.json`) |
+| Presentation | Single self-contained **HTML** dashboard — inline SVG/CSS/JS, **zero external dependencies**, brand-themed |
 
-## Roadmap Snapshot
+---
 
-Completed:
+## Repository structure
 
-- Static browser MVP
-- Login experience
-- Ticket dashboard
-- AI triage simulator
-- Knowledge base module
-- Integration simulator
-- Automation simulator
-- Insights dashboard
-- Blueprint page
-- Responsive UI review
-- GitHub-ready documentation
+```
+velocity-engine/
+├── README.md
+├── LICENSE
+├── requirements.txt          # only needed for the Claude API pass
+├── .gitignore
+├── src/
+│   ├── generate_leads.py     # synthetic, calibrated 400-lead dataset
+│   ├── score_leads.py        # RULES pass — deterministic BANT, free & offline
+│   ├── score_leads_ai.py     # AI pass — Claude API + structured outputs
+│   ├── build_dashboard.py    # renders the executive dashboard
+│   └── build_console.py      # renders the working Console + how-to guide
+├── data/
+│   ├── leads.json            # raw synthetic leads
+│   └── leads_scored.json     # leads + BANT scores + tiers + SLAs
+└── docs/                     # GitHub Pages-ready
+    ├── index.html            # executive dashboard (the narrative)
+    ├── console.html          # Velocity Console (the working tool)
+    └── guide.html            # how to use the console
+```
 
-Next build phase:
+---
 
-- Add Supabase database
-- Save tickets and knowledge articles permanently
-- Add FastAPI AI triage endpoint
-- Replace deterministic triage with AI structured output
-- Connect n8n workflow triggers
+## Getting started
 
-See the full roadmap in [docs/ROADMAP.md](./docs/ROADMAP.md).
+> All commands run from the repository root.
 
-## Security Notes
+### Option A — Rules pass (free, offline, no dependencies)
 
-Current version:
+```bash
+python src/generate_leads.py     # writes data/leads.json
+python src/score_leads.py        # writes data/leads_scored.json
+python src/build_dashboard.py    # writes docs/index.html  (executive dashboard)
+python src/build_console.py      # writes docs/console.html + docs/guide.html  (working tool)
 
-- No real customer data
-- No backend
-- No authentication service
-- No API keys
-- No production integrations
+# open them
+open docs/console.html           # the working Console  (macOS; 'start' on Windows, 'xdg-open' on Linux)
+open docs/index.html             # the executive dashboard
+```
 
-Production version should add:
+### Option B — AI pass (real Claude scoring)
 
-- Secure authentication
-- Role-based access control
-- Environment variables for secrets
-- API rate limiting
-- Audit logs
-- Data retention rules
-- PII handling policy
-- CRM and helpdesk permission controls
+```bash
+pip install -r requirements.txt
+export ANTHROPIC_API_KEY=sk-ant-...
 
-## Author
+python src/score_leads_ai.py --limit 5     # cheap smoke test first (~free)
+python src/score_leads_ai.py               # score all 400 (~$0.90 Opus / ~$0.18 Haiku)
+python src/build_dashboard.py              # rebuild the dashboard with AI scores
+open docs/index.html
+```
 
-Acey Magallanes
+Useful flags on the AI pass: `--model claude-haiku-4-5` (cheaper), `--limit N` (test subset), `--concurrency N`.
 
-Customer Transformation and Business Transformation professional focused on AI automation, process improvement, operations excellence, and practical workflow systems.
+---
 
-AceLiora AI
+## The dashboard
 
-Automate. Transform. Grow.
+A single, self-contained `docs/index.html` (no build step, no CDN — renders offline). It's a scrollytelling executive narrative:
+
+- **Hero & the problem** — animated KPIs: 400 leads vs. 7 people, off-hours volume, hours-to-reply.
+- **The as-is process** — an interactive **response-time distribution** that exposes the broken long tail.
+- **The cost** — the high-intent buyers ignored entirely.
+- **The engine** — an interactive **lead explorer**: click any real lead to see its live BANT breakdown, reason, and routing SLA.
+- **Under the hood** — the **animated data-architecture schematic** (flowing data packets, glowing AI core, feedback loop) plus the request → response and tech stack.
+- **The transformation** — a **Today ⇄ Velocity toggle** that morphs every number live.
+- **The blueprint & rollout** — how a company plugs in its own systems, and a 3-week go-live timeline.
+- **The payoff** — the headline impact.
+
+**Host it free:** push this repo, then enable **GitHub Pages → Deploy from branch → `/docs`**.
+
+---
+
+## Data dictionary
+
+`data/leads.json` — array of 400 lead objects under `{ "_meta": {...}, "leads": [...] }`.
+
+| Field | Type | Description |
+|---|---|---|
+| `lead_id` | string | `L0001`–`L0400` |
+| `created_at` | string | ISO 8601 timestamp, spread across one calendar month (incl. evenings/weekends) |
+| `source` | enum | `demo_request` · `free_trial` · `content_webinar` · `paid_ad` · `referral` |
+| `company_size_band` | enum | `solo` · `small` · `mid` · `large` · `enterprise` |
+| `contact_role` | enum | `junior` · `manager` · `director` · `vp` · `c_level` · `owner` |
+| `region` | string | Country / region |
+| `stated_need` | string | The lead's own 1–2 sentence message (the signal that gets scored) |
+| `as_is_first_response_minutes` | int \| null | Minutes to first reply under the manual process; `null` if never contacted |
+| `as_is_contacted` | bool | Whether the lead was ever contacted |
+
+After scoring, `leads_scored.json` adds: `bant {budget, authority, need, timeline}`, `bant_total` (0–12), `priority` (`high`/`medium`/`low`), `to_be_first_response_minutes`, and — on the AI pass — `bant_reason`.
+
+**Calibration targets** (so readers know the data is modeled, not real):
+
+- Source mix: demo 25% · trial 30% · webinar 25% · ad 15% · referral 5%
+- Intended priority spread: ~15% high / ~35% medium / ~50% low (emerges from the messages, not labeled)
+- As-is mean first response: ~2,520 min (≈42 h), long-tailed; ~30% never contacted
+- Source correlates with quality: demo/referral skew senior, larger, higher-intent; webinar/ad skew lower-intent
+
+---
+
+## How a company adopts this
+
+The engine is the reusable core; you bring the edges. Typical rollout is ~3 weeks with no rip-and-replace:
+
+| Phase | What happens | You walk away with |
+|---|---|---|
+| **Week 1 — Connect & map** | Wire up channels (webhooks / native), map fields to the schema, import 3–6 months of history | Every lead in one clean stream |
+| **Week 2 — Calibrate** | Define your BANT rubric in plain English; score your history; tune tiers against known won/lost | A model validated on *your* outcomes |
+| **Week 3 — Route & go live** | Wire actions into CRM/Slack/calendar, set SLAs, shadow-run, then switch on | Hot leads to the right rep in minutes |
+| **Ongoing** | Weekly review; outcomes feed back to refine the rubric | Compounding accuracy, near-zero manual effort |
+
+---
+
+## Notes & disclaimer
+
+- **The data is 100% synthetic.** Cadence Workflow is fictional; no real persons, companies, or contact details are represented. The dataset is generated and calibrated for demonstration only.
+- The numbers in this README are produced from the committed dataset and will reproduce exactly (`generate_leads.py` uses a fixed random seed).
+- The Claude API pass costs a small amount per run against your own API key; the rules pass is free and requires no key or dependencies.
+
+---
+
+## About
+
+Built by **Acey Magallanes** as part of **AceLiora AI** — an AI automation studio helping SMEs turn manual, leaky processes into fast, measurable, automated systems.
+
+> *Accelerate Change. Sustain Excellence.*
 
 ## License
 
-This project is released under the MIT License.
-
-See [LICENSE](./LICENSE).
+[MIT](LICENSE) © 2026 Acey Magallanes
