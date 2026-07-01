@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SupportOps AI | Customer Support Intelligence</title>
+    <link rel="stylesheet" href="./styles.css?v=20260630-visualqa2" />
+  </head>
+  <body>
+    <div class="login-shell" id="loginScreen">
+      <header class="login-brand" aria-label="AceLiora AI">
+        <div class="brand-mark">A</div>
+        <div>
+          <strong>AceLiora AI</strong>
+          <span>Automate. Transform. Grow.</span>
+        </div>
+      </header>
+
+      <main class="login-card" aria-labelledby="loginTitle">
+        <div class="product-kicker">Customer Support Intelligence</div>
+        <h1 id="loginTitle">SupportOps AI</h1>
+        <p class="login-copy">
+          A focused workspace for ticket triage, response quality, SLA risk, and support operations insight.
+        </p>
+
+        <div class="role-grid" role="group" aria-label="Select demo role">
+          <button class="role-card is-selected" type="button" data-role="Support Agent">
+            <span>Support Agent</span>
+            <small>Queue handling</small>
+          </button>
+          <button class="role-card" type="button" data-role="Team Lead">
+            <span>Team Lead</span>
+            <small>Escalation control</small>
+          </button>
+          <button class="role-card" type="button" data-role="Operations Admin">
+            <span>Operations Admin</span>
+            <small>Automation oversight</small>
+          </button>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" value="acey@aceliora.ai" autocomplete="email" />
+          <button class="primary-button" type="submit">Enter workspace</button>
+        </form>
+      </main>
+    </div>
+
+    <div class="app-shell is-hidden" id="appShell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <strong>SupportOps AI</strong>
+            <span>AceLiora portfolio</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" type="button" data-view="dashboard">Dashboard</button>
+          <button class="nav-item" type="button" data-view="triage">AI Triage</button>
+          <button class="nav-item" type="button" data-view="integrations">Integrations</button>
+          <button class="nav-item" type="button" data-view="knowledge">Knowledge Base</button>
+          <button class="nav-item" type="button" data-view="queue">Ticket Queue</button>
+          <button class="nav-item" type="button" data-view="automations">Automations</button>
+          <button class="nav-item" type="button" data-view="insights">Insights</button>
+          <button class="nav-item" type="button" data-view="blueprint">Blueprint</button>
+        </nav>
+
+        <div class="user-panel">
+          <span id="userRole">Support Agent</span>
+          <strong id="userEmail">acey@aceliora.ai</strong>
+          <button class="ghost-button" type="button" id="resetDemoButton">Reset demo</button>
+          <button class="ghost-button" type="button" id="logoutButton">Log out</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Live Operations Workspace</p>
+            <h2 id="viewTitle">Dashboard</h2>
+          </div>
+          <div class="topbar-actions">
+            <label class="search-field" for="ticketSearch">
+              <span>Search</span>
+              <input id="ticketSearch" type="search" placeholder="Ticket, customer, issue" />
+            </label>
+            <button class="dark-button" type="button" id="runTriageButton">Run AI triage</button>
+          </div>
+        </header>
+
+        <section class="view-panel is-active" id="dashboardView" data-view-panel="dashboard">
+          <div class="metric-grid" id="metricGrid"></div>
+
+          <div class="workspace-grid">
+            <section class="queue-panel" aria-labelledby="queueTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Priority Queue</p>
+                  <h3 id="queueTitle">Ticket queue</h3>
+                </div>
+                <div class="segmented-control" id="filterTabs" role="tablist" aria-label="Ticket filter">
+                  <button class="is-selected" type="button" data-filter="all">All</button>
+                  <button type="button" data-filter="risk">SLA Risk</button>
+                  <button type="button" data-filter="negative">Negative</button>
+                  <button type="button" data-filter="refund">Refunds</button>
+                </div>
+              </div>
+              <div class="ticket-list" id="ticketList"></div>
+            </section>
+
+            <section class="detail-panel" aria-labelledby="detailTitle">
+              <div id="ticketDetail"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="triageView" data-view-panel="triage">
+          <div class="triage-layout">
+            <section class="triage-panel" aria-labelledby="triageTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">AI Triage Lab</p>
+                  <h3 id="triageTitle">Analyze a customer message</h3>
+                </div>
+              </div>
+
+              <form class="triage-form" id="triageForm">
+                <div class="form-row">
+                  <label for="triageCustomer">
+                    <span>Customer</span>
+                    <input id="triageCustomer" name="customer" type="text" value="Sofia Mendoza" />
+                  </label>
+                  <label for="triageCompany">
+                    <span>Company</span>
+                    <input id="triageCompany" name="company" type="text" value="MetroCare Dental" />
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label for="triageChannel">
+                    <span>Channel</span>
+                    <select id="triageChannel" name="channel">
+                      <option>Email</option>
+                      <option>Chat</option>
+                      <option>Portal</option>
+                      <option>CRM</option>
+                    </select>
+                  </label>
+                  <label for="triageSubject">
+                    <span>Subject</span>
+                    <input id="triageSubject" name="subject" type="text" value="Urgent refund and access issue" />
+                  </label>
+                </div>
+
+                <label for="triageMessage">
+                  <span>Customer message</span>
+                  <textarea id="triageMessage" name="message">We were charged twice for this month, and now our admin account cannot log in. This is urgent because our staff need access before clinic hours tomorrow. Please refund the duplicate payment and fix the login issue today.</textarea>
+                </label>
+
+                <button class="primary-button" type="submit">Analyze message</button>
+              </form>
+            </section>
+
+            <section class="triage-panel" aria-labelledby="triageResultTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Generated Intelligence</p>
+                  <h3 id="triageResultTitle">Triage result</h3>
+                </div>
+                <span class="pill info" id="triageStatus">Ready</span>
+              </div>
+
+              <div class="triage-result" id="triageResult">
+                <div class="empty-state">
+                  <strong>Awaiting analysis</strong>
+                  <p>Submit a customer message to generate sentiment, urgency, category, summary, and response guidance.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="integrationsView" data-view-panel="integrations">
+          <div class="integration-layout">
+            <section class="integration-panel" aria-labelledby="integrationTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Data Intake</p>
+                  <h3 id="integrationTitle">Integration sources</h3>
+                </div>
+                <span class="pill info" id="integrationCount">0 sources</span>
+              </div>
+              <div class="integration-list" id="integrationList"></div>
+            </section>
+
+            <section class="integration-panel" aria-labelledby="pipelineTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Ingestion Pipeline</p>
+                  <h3 id="pipelineTitle">Source to intelligence flow</h3>
+                </div>
+                <span class="pill low" id="integrationStatus">Ready</span>
+              </div>
+              <div class="integration-detail" id="integrationDetail"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="knowledgeView" data-view-panel="knowledge">
+          <div class="knowledge-layout">
+            <section class="knowledge-panel" aria-labelledby="knowledgeLibraryTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Support Playbooks</p>
+                  <h3 id="knowledgeLibraryTitle">Knowledge library</h3>
+                </div>
+              </div>
+
+              <div class="knowledge-toolbar">
+                <label class="search-field" for="knowledgeSearch">
+                  <span>Find article</span>
+                  <input id="knowledgeSearch" type="search" placeholder="Refund, access, export" />
+                </label>
+                <div class="segmented-control" id="knowledgeFilters" role="tablist" aria-label="Knowledge category filter">
+                  <button class="is-selected" type="button" data-knowledge-filter="all">All</button>
+                  <button type="button" data-knowledge-filter="Billing">Billing</button>
+                  <button type="button" data-knowledge-filter="Access">Access</button>
+                  <button type="button" data-knowledge-filter="Reporting">Reporting</button>
+                </div>
+              </div>
+
+              <div class="article-list" id="knowledgeList"></div>
+            </section>
+
+            <section class="knowledge-panel" aria-labelledby="knowledgeDetailTitle">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Agent Guidance</p>
+                  <h3 id="knowledgeDetailTitle">Article detail</h3>
+                </div>
+                <span class="pill info" id="knowledgeMatchCount">0 matches</span>
+              </div>
+
+              <div class="article-detail" id="knowledgeDetail"></div>
+
+              <form class="knowledge-form" id="knowledgeForm">
+                <p class="eyebrow">Add Playbook</p>
+                <div class="form-row">
+                  <label for="knowledgeTitle">
+                    <span>Title</span>
+                    <input id="knowledgeTitle" name="title" type="text" placeholder="New support SOP" />
+                  </label>
+                  <label for="knowledgeCategory">
+                    <span>Category</span>
+                    <select id="knowledgeCategory" name="category">
+                      <option>Billing</option>
+                      <option>Refund</option>
+                      <option>Access</option>
+                      <option>Reporting</option>
+                      <option>Feedback</option>
+                      <option>Technical</option>
+                    </select>
+                  </label>
+                </div>
+                <label for="knowledgeSummary">
+                  <span>Summary</span>
+                  <input id="knowledgeSummary" name="summary" type="text" placeholder="What agents should use this for" />
+                </label>
+                <label for="knowledgeContent">
+                  <span>Resolution steps</span>
+                  <textarea id="knowledgeContent" name="content" placeholder="Step 1. Confirm the customer impact..."></textarea>
+                </label>
+                <button class="primary-button" type="submit">Add article</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section class="view-panel" id="queueView" data-view-panel="queue">
+          <div class="queue-table-shell">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Operational Queue</p>
+                <h3>Ticket intelligence table</h3>
+              </div>
+              <button class="ghost-button" type="button" id="exportButton">Export summary</button>
+            </div>
+            <div class="queue-table" id="queueTable"></div>
+          </div>
+        </section>
+
+        <section class="view-panel" id="automationsView" data-view-panel="automations">
+          <div class="automation-layout">
+            <section class="automation-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">n8n-ready Rules</p>
+                  <h3>Automation rules</h3>
+                </div>
+                <span class="pill info" id="automationRuleCount">0 rules</span>
+              </div>
+              <div class="automation-grid" id="automationGrid"></div>
+            </section>
+
+            <div class="automation-side">
+              <section class="automation-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">Workflow Simulator</p>
+                    <h3>Selected ticket preview</h3>
+                  </div>
+                  <span class="pill info" id="automationMatchCount">0 matches</span>
+                </div>
+                <div class="automation-simulator" id="automationSimulator"></div>
+              </section>
+
+              <section class="activity-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">Recent Actions</p>
+                    <h3>Operations log</h3>
+                  </div>
+                </div>
+                <div class="activity-list" id="activityList"></div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="view-panel" id="insightsView" data-view-panel="insights">
+          <div class="insights-dashboard">
+            <section class="insight-hero-panel">
+              <div>
+                <p class="eyebrow">Executive Intelligence</p>
+                <h3>Support operations health</h3>
+                <p id="executiveSummary">AI-generated performance summary will appear here.</p>
+              </div>
+              <div class="health-score" aria-label="Support health score">
+                <strong id="healthScore">0</strong>
+                <span>Health score</span>
+              </div>
+            </section>
+
+            <div class="insight-kpi-grid" id="insightKpiGrid"></div>
+
+            <div class="insight-detail-grid">
+              <section class="insight-panel">
+                <p class="eyebrow">Volume Drivers</p>
+                <h3>Ticket category mix</h3>
+                <div class="insight-bars" id="insightBars"></div>
+              </section>
+
+              <section class="insight-panel">
+                <p class="eyebrow">Risk Signals</p>
+                <h3>SLA and sentiment exposure</h3>
+                <div class="risk-list" id="riskList"></div>
+              </section>
+            </div>
+
+            <div class="insight-detail-grid">
+              <section class="insight-panel">
+                <p class="eyebrow">Process Improvement</p>
+                <h3>Recommended backlog</h3>
+                <div class="issue-list" id="issueList"></div>
+              </section>
+
+              <section class="insight-panel">
+                <p class="eyebrow">Automation Impact</p>
+                <h3>Effort avoided</h3>
+                <div class="impact-panel" id="impactPanel"></div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="view-panel" id="blueprintView" data-view-panel="blueprint">
+          <div class="blueprint-dashboard">
+            <section class="blueprint-hero-panel">
+              <div>
+                <p class="eyebrow">Implementation Blueprint</p>
+                <h3>Customer support intelligence architecture</h3>
+                <p>
+                  A practical system map for turning email, CRM, helpdesk, and webhook inputs into AI triage,
+                  knowledge guidance, automation triggers, and executive operations insight.
+                </p>
+              </div>
+              <div class="blueprint-stats" id="blueprintStats"></div>
+            </section>
+
+            <section class="blueprint-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Data Flow</p>
+                  <h3>Source to action pipeline</h3>
+                </div>
+              </div>
+              <div class="architecture-flow">
+                <div class="architecture-node">
+                  <span>1</span>
+                  <strong>Intake</strong>
+                  <p>Email, CRM, helpdesk, or webhook event enters the system.</p>
+                </div>
+                <div class="architecture-node">
+                  <span>2</span>
+                  <strong>Normalize</strong>
+                  <p>Customer, channel, subject, message, company, and metadata are standardized.</p>
+                </div>
+                <div class="architecture-node">
+                  <span>3</span>
+                  <strong>Classify</strong>
+                  <p>AI assigns sentiment, category, urgency, SLA risk, and next best action.</p>
+                </div>
+                <div class="architecture-node">
+                  <span>4</span>
+                  <strong>Assist</strong>
+                  <p>Knowledge articles, response drafts, and routing recommendations support the agent.</p>
+                </div>
+                <div class="architecture-node">
+                  <span>5</span>
+                  <strong>Automate</strong>
+                  <p>n8n-style workflows push escalations, CRM updates, and improvement signals.</p>
+                </div>
+              </div>
+            </section>
+
+            <div class="blueprint-grid">
+              <section class="blueprint-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">Data Model</p>
+                    <h3>Core objects</h3>
+                  </div>
+                </div>
+                <div class="data-model-list" id="blueprintDataModel"></div>
+              </section>
+
+              <section class="blueprint-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">Automation Layer</p>
+                    <h3>Workflow handoffs</h3>
+                  </div>
+                </div>
+                <div class="automation-map" id="blueprintAutomationMap"></div>
+              </section>
+            </div>
+
+            <section class="blueprint-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Build Roadmap</p>
+                  <h3>Static demo to production architecture</h3>
+                </div>
+              </div>
+              <div class="roadmap-grid" id="blueprintRoadmap"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="./app.js?v=20260630-visualqa"></script>
+  </body>
+</html>
